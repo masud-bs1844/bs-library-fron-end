@@ -218,10 +218,10 @@ export default function BookDetails() {
             alt={bookData.title}
             className="w-[250px] sm:w-[280px] h-auto object-cover rounded shadow-md"
           />
-          <button className="mt-4 w-full bg-gray-100 border border-gray-300 text-gray-700 font-semibold py-2 px-4 rounded hover:bg-gray-200 flex justify-between items-center">
+          {/* <button className="mt-4 w-full bg-gray-100 border border-gray-300 text-gray-700 font-semibold py-2 px-4 rounded hover:bg-gray-200 flex justify-between items-center">
             WANT TO READ
             <ChevronDown className="w-4 h-4" />
-          </button>
+          </button> */}
 
           {/* Employee Review summary panel (LEFT SIDE) [kept disabled to avoid duplication above] */}
           {false && (
