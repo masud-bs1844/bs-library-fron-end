@@ -135,7 +135,7 @@ export default function Home() {
                 <Section title="Recommended" books={books.recommended} />
                 <Section title="Popular" books={books.popular} />
                 <NewBookCollections />
-                <BookSlider />
+                {/* <BookSlider /> */}
               </>
             ) : (
               <>

@@ -414,7 +414,7 @@ export default function BookDetails() {
                   stored.push({ ...bookData, quantity: 1 });
                   localStorage.setItem("borrowedBooks", JSON.stringify(stored));
                 }
-                navigate("/borrowed");
+                navigate("/fill-up-form");
               }}
               className="bg-sky-500 hover:bg-sky-600 text-white font-semibold px-6 py-3 rounded-md w-full sm:w-auto block text-center"
             >
