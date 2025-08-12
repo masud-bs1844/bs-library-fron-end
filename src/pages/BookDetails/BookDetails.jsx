@@ -6,7 +6,6 @@
  * Vary counts (8–9, 3–4, 1, or none) per your instruction.
  */
 const REVIEWS_DB = {
-  // Many reviews (sample)
   "5": {
     heading: "Employee Review",
     overall: 4.7,
@@ -21,17 +20,16 @@ const REVIEWS_DB = {
       "https://images.unsplash.com/photo-1495446815901-a7297e633e8d?q=80&w=400&auto=format&fit=crop",
     ],
     reviews: [
-      { id: "r1", name: "Humayun Kabir", title: "An absolute masterpiece even in 2025", stars: 5, country: "Bangladesh", date: "July 2, 2025", verified: true, body: "Moves you from low‑level to high‑level architectural thinking. Evergreen patterns and trade‑offs. Senior engineers loved it.", helpful: 56 },
+      { id: "r1", name: "Humayun Kabir", title: "An absolute masterpiece even in 2025", stars: 5, country: "Bangladesh", date: "July 2, 2025", verified: true, body: "Moves you from low-level to high-level architectural thinking. Evergreen patterns and trade-offs. Senior engineers loved it.", helpful: 56 },
       { id: "r2", name: "Lubaba Jahan", title: "Must Read", stars: 5, country: "Bangladesh", date: "May 26, 2025", verified: false, body: "Seminal work. Not a quick read, but worth the effort. Clear patterns and timeless insights.", helpful: 14 },
       { id: "r3", name: "Rashedul Zaman", title: "Great print, good quality cover", stars: 4, country: "Bangladesh", date: "April 22, 2025", verified: true, body: "Well packaged, arrived flat. Solid examples and commentary.", helpful: 9 },
-      { id: "r4", name: "Tasmania Rosa .", title: "Practical patterns", stars: 5, country: "Bangladesh", date: "March 02, 2025", verified: true, body: "Explains trade‑offs clearly. Helped our team refactor services.", helpful: 11 },
+      { id: "r4", name: "Tasmania Rosa .", title: "Practical patterns", stars: 5, country: "Bangladesh", date: "March 02, 2025", verified: true, body: "Explains trade-offs clearly. Helped our team refactor services.", helpful: 11 },
       { id: "r5", name: "Shuvo Rahman", title: "Dense but rewarding", stars: 4, country: "Bangladesh", date: "Feb 18, 2025", verified: false, body: "Take it slow. Examples are timeless.", helpful: 7 },
-      { id: "r6", name: "Maruf Islam", title: "Go‑to reference", stars: 5, country: "Bangladesh", date: "January 11, 2025", verified: true, body: "Keep it on my desk. Patterns map to modern stacks easily.", helpful: 18 },
+      { id: "r6", name: "Maruf Islam", title: "Go-to reference", stars: 5, country: "Bangladesh", date: "January 11, 2025", verified: true, body: "Keep it on my desk. Patterns map to modern stacks easily.", helpful: 18 },
       { id: "r7", name: "Sazal Uddin.", title: "Bridges theory and practice", stars: 5, country: "Bangladesh", date: "Nov 3, 2024", verified: true, body: "Rare book that improves code quality quickly.", helpful: 6 },
       { id: "r8", name: "Naimur Hasan", title: "A classic", stars: 5, country: "Bangladesh", date: "Sep 1, 2024", verified: false, body: "Still relevant, even with new frameworks.", helpful: 4 },
     ],
   },
-  // 3–4 reviews
   "2": {
     heading: "Employee Review",
     overall: 4.9,
@@ -39,12 +37,11 @@ const REVIEWS_DB = {
     breakdown: { 5: 88, 4: 9, 3: 2, 2: 1, 1: 0 },
     images: [],
     reviews: [
-      { id: "r9", name: "Nadia Zahan.", title: "Clear cloud strategy playbook", stars: 5, country: "Bangladesh", date: "May 10, 2024", verified: true, body: "Vendor‑neutral frameworks. Helped us choose a service model and avoid re‑architecture.", helpful: 22 },
+      { id: "r9", name: "Nadia Zahan.", title: "Clear cloud strategy playbook", stars: 5, country: "Bangladesh", date: "May 10, 2024", verified: true, body: "Vendor-neutral frameworks. Helped us choose a service model and avoid re-architecture.", helpful: 22 },
       { id: "r10", name: "Vitul Shohan", title: "Strong patterns", stars: 4, country: "Bangladesh", date: "Aug 8, 2024", verified: false, body: "Good balance of business & tech requirements.", helpful: 5 },
       { id: "r11", name: "Purification Meril", title: "Great case studies", stars: 5, country: "Bangladesh", date: "Jan 20, 2025", verified: true, body: "Real migrations and pitfalls. Very useful.", helpful: 9 },
     ],
   },
-  // 1 review
   "1": {
     heading: "Employee Review",
     overall: 4.0,
@@ -64,6 +61,7 @@ import {
   Users,
   PlayCircle,
   Download,
+  BookOpen, // ⬅ added
 } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import api from "../../api";
@@ -73,6 +71,8 @@ export default function BookDetails() {
   const navigate = useNavigate();
   const [bookData, setBookData] = useState(null);
   const [relatedBooks, setRelatedBooks] = useState([]);
+  const [catalog, setCatalog] = useState([]);            // ← keep catalog to derive stats
+  const [stats, setStats] = useState({ available: 0, upcoming: 0, unavailable: 0 });
   const [showFullSummary, setShowFullSummary] = useState(false);
   const [loading, setLoading] = useState(true);
 
@@ -96,7 +96,8 @@ export default function BookDetails() {
       coverImage: b.book_cover_url || "",
       rating: b.average_rating || 0,
       ratingCount: b.rating_count || 0,
-      reviews: null, // we'll override later with real review count
+      reviews: null,
+      available: b.available_copies, // we'll override later with real review count
       publisher: b.publisher || "—",
       publishDate: b.publish_date || "",
       category: b.category?.category_name || "General",
@@ -189,14 +190,13 @@ export default function BookDetails() {
     );
   }
 
-  // Reviews for this book (may be null/undefined)
   const pack = REVIEWS_DB[String(bookData.id)] || null;
-
-  // === STRICT display logic: always count from REVIEWS_DB; if none => 0 | No Reviews
   const localReviewCount = pack?.reviews?.length ?? 0;
   const ratingCountDisplay = pack ? localReviewCount : 0;
   const reviewsTextDisplay = pack
-    ? (localReviewCount > 0 ? `${localReviewCount} Reviews` : "No Reviews")
+    ? localReviewCount > 0
+      ? `${localReviewCount} Reviews`
+      : "No Reviews"
     : "No Reviews";
   // === END
 
@@ -282,13 +282,11 @@ export default function BookDetails() {
 
         {/* RIGHT COLUMN */}
         <div className="col-span-2">
-          {/* Book core details */}
           <h1 className="text-2xl lg:text-3xl font-bold text-gray-900">
             {bookData.title}
           </h1>
           <p className="text-gray-600 mt-1 text-base">
-            by{" "}
-            <span className="text-sky-600 font-medium">{bookData.authors}</span>
+            by <span className="text-sky-600 font-medium">{bookData.authors}</span>
           </p>
           <p className="text-sm text-gray-500 mt-1">
             {bookData.publisher}, {bookData.publishDate} -{" "}
@@ -313,9 +311,20 @@ export default function BookDetails() {
             </span>
           </div>
 
-          <div className="mt-2 flex items-center text-sm text-gray-600">
-            <Users className="w-4 h-4 mr-2" />
-            {bookData.wants} users want this item!
+          {/* Counts line (books icon) */}
+          <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-gray-700">
+            <span className="inline-flex items-center">
+              <BookOpen className="w-4 h-4 mr-2" />
+              <span className="font-semibold">{bookData.available}</span>&nbsp;Available Copies
+            </span>
+            <span className="hidden sm:inline text-gray-300">|</span>
+            <span className="inline-flex items-center">
+              <span className="font-semibold">{stats.upcoming}</span>&nbsp;Upcoming
+            </span>
+            <span className="hidden sm:inline text-gray-300">|</span>
+            <span className="inline-flex items-center">
+              <span className="font-semibold">{stats.unavailable}</span>&nbsp;Not available
+            </span>
           </div>
 
           {/* Summary */}
@@ -339,7 +348,7 @@ export default function BookDetails() {
           </div>
 
           {/* Availability + Audio + PDF */}
-          <div className="mt-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+          {/* <div className="mt-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
             <div>
               <span className="text-green-600 font-medium text-sm inline-flex items-center">
                 <span className="h-3 w-3 bg-green-500 rounded-full animate-ping mr-2"></span>
@@ -362,35 +371,67 @@ export default function BookDetails() {
               <Download className="w-4 h-4" />
               PDF
             </a>
-          </div>
+          </div> */}
+
+          {/* Availability + Audio + PDF (PDF right, aligned with Audio) */}
+<div className="mt-6">
+  {/* Availability badge stays above */}
+  <span className="text-green-600 font-medium text-sm inline-flex items-center">
+    <span className="h-3 w-3 bg-green-500 rounded-full animate-ping mr-2"></span>
+    Available
+  </span>
+
+  {/* Row: Audio (left) + PDF (right) */}
+  <div className="mt-3 flex flex-wrap items-center gap-3">
+    {/* Audio section */}
+    <div className="flex items-center gap-2 text-sm">
+      <PlayCircle className="w-5 h-5 text-gray-600" />
+      <span className="text-gray-700">Audio Clip</span>
+      <div className="w-32 h-1 bg-gray-200 rounded-full mx-2 sm:mx-3">
+        <div className="w-1/3 h-full bg-sky-500 rounded-full"></div>
+      </div>
+    </div>
+
+    {/* PDF button stays on the right side */}
+    <a
+      href={bookData.pdfLink}
+      download
+      className="ml-auto inline-flex items-center gap-1 text-sm text-gray-700 font-semibold border border-gray-300 px-4 py-2 rounded hover:bg-gray-100"
+    >
+      <Download className="w-4 h-4" />
+      PDF
+    </a>
+  </div>
+</div>
+
 
           <div className="mt-6">
-             <button
+            <button
               onClick={() => {
                 const stored = JSON.parse(localStorage.getItem("borrowedBooks")) || [];
                 const alreadyExists = stored.find((b) => b.id === bookData.id);
-
                 if (!alreadyExists) {
                   stored.push({ ...bookData, quantity: 1 });
                   localStorage.setItem("borrowedBooks", JSON.stringify(stored));
                 }
-
                 navigate("/borrowed");
               }}
               className="bg-sky-500 hover:bg-sky-600 text-white font-semibold px-6 py-3 rounded-md w-full sm:w-auto block text-center"
             >
               Borrowed
             </button>
-           </div>
+          </div>
+        </div>
 
-          {/* Related Books (unchanged) */}
+        {/* === CENTERED Related Books (exactly 3) BEFORE reviews === */}
+        <div className="col-span-3">
           <div className="mt-10">
-            <h3 className="text-lg font-bold text-gray-800 mb-4">Related Books</h3>
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            <h3 className="text-lg font-bold text-gray-800 mb-4 text-center">Related Books</h3>
+            <div className="mx-auto max-w-5xl grid grid-cols-1 md:grid-cols-3 gap-6 justify-items-center">
               {relatedBooks.map((book) => (
                 <div
                   key={book.id}
-                  className="bg-white rounded-xl shadow-sm hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300 ease-in-out p-3 flex flex-col justify-between"
+                  className="bg-white rounded-xl shadow-sm hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300 ease-in-out p-3 flex flex-col justify-between w-full"
                 >
                   <img
                     src={book.coverImage || book.image}
@@ -398,12 +439,8 @@ export default function BookDetails() {
                     className="w-full h-40 object-cover rounded-md"
                   />
                   <div className="mt-3">
-                    <h4 className="font-semibold text-sm text-gray-800">
-                      {book.title}
-                    </h4>
-                    <p className="text-xs text-gray-600">
-                      {book.authors || book.author}
-                    </p>
+                    <h4 className="font-semibold text-sm text-gray-800">{book.title}</h4>
+                    <p className="text-xs text-gray-600">{book.authors || book.author}</p>
                     <div className="flex items-center mt-1">
                       {[...Array(5)].map((_, i) => (
                         <Star
@@ -418,9 +455,7 @@ export default function BookDetails() {
                     </div>
                     <p
                       className={`text-xs font-medium mt-1 ${
-                        book.status === "Out Of Stock"
-                          ? "text-red-500"
-                          : "text-green-600"
+                        book.status === "Out Of Stock" ? "text-red-500" : "text-green-600"
                       }`}
                     >
                       {book.status || "Available"}
@@ -438,15 +473,12 @@ export default function BookDetails() {
               ))}
             </div>
           </div>
-          {/* ===== end related ===== */}
         </div>
 
-        {/* LEFT summary (under Want to Read) */}
+        {/* LEFT summary (bars panel) */}
         <div className="col-span-1">
           <div className="w-full mt-8">
-            <h3 className="text-xl font-bold text-gray-900 mb-2">
-              {pack?.heading || "Employee Review"}
-            </h3>
+            <h3 className="text-xl font-bold text-gray-900 mb-2">{pack?.heading || "Employee Review"}</h3>
 
             {!pack || pack.total === 0 ? (
               <div className="text-sm text-gray-500">No reviews yet for this book.</div>
@@ -461,7 +493,6 @@ export default function BookDetails() {
                     {pack.total.toLocaleString()} global ratings
                   </div>
 
-                  {/* Bars */}
                   <div className="mt-4 space-y-1">
                     {[5, 4, 3, 2, 1].map((star) => (
                       <div key={star} className="flex items-center gap-3">
@@ -493,7 +524,7 @@ export default function BookDetails() {
           </div>
         </div>
 
-        {/* RIGHT reviews (images + list) */}
+        {/* RIGHT reviews (images + list) — YOUR DESIGN, with JSX fixes */}
         <div className="col-span-2">
           <div className="mt-10">
             <h3 className="text-lg font-bold text-gray-800 mb-3">
@@ -508,9 +539,7 @@ export default function BookDetails() {
                   <div className="mb-6">
                     <div className="flex items-center justify-between mb-2">
                       <h4 className="text-base font-semibold">Reviews with images</h4>
-                      <button className="text-sm text-sky-600 hover:underline">
-                        See all photos
-                      </button>
+                      <button className="text-sm text-sky-600 hover:underline">See all photos</button>
                     </div>
                     <div className="flex gap-3 overflow-x-auto no-scrollbar py-2 pr-1">
                       {pack.images.map((src, idx) => (
@@ -534,9 +563,7 @@ export default function BookDetails() {
                             <Star
                               key={i}
                               className={`w-4 h-4 ${
-                                i < r.stars
-                                  ? "text-yellow-500 fill-yellow-500"
-                                  : "text-gray-300"
+                                i < r.stars ? "text-yellow-500 fill-yellow-500" : "text-gray-300"
                               }`}
                             />
                           ))}
@@ -546,23 +573,15 @@ export default function BookDetails() {
 
                       <div className="text-xs text-gray-500 mt-1">
                         {r.name} — Reviewed in the {r.country} on {r.date}
-                        {r.verified && (
-                          <span className="ml-1 text-green-600">• Verified Purchase</span>
-                        )}
+                        {r.verified && <span className="ml-1 text-green-600">• Verified Purchase</span>}
                       </div>
 
                       <p className="text-sm text-gray-700 mt-3 leading-relaxed">{r.body}</p>
 
                       <div className="mt-3 flex items-center gap-3 text-xs text-gray-600">
-                        <button className="rounded-full border px-3 py-1 hover:bg-gray-50">
-                          Helpful
-                        </button>
-                        <button className="rounded-full border px-3 py-1 hover:bg-gray-50">
-                          Report
-                        </button>
-                        <span className="text-gray-500">
-                          {r.helpful} people found this helpful
-                        </span>
+                        <button className="rounded-full border px-3 py-1 hover:bg-gray-50">Helpful</button>
+                        <button className="rounded-full border px-3 py-1 hover:bg-gray-50">Report</button>
+                        <span className="text-gray-500">{r.helpful} people found this helpful</span>
                       </div>
                     </article>
                   ))}
@@ -571,9 +590,10 @@ export default function BookDetails() {
             )}
           </div>
         </div>
-        {/* ===== end new row ===== */}
       </div>
     </div>
   );
 }
+
+
 
