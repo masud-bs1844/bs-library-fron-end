@@ -1,7 +1,9 @@
+
+
 // Home.jsx
 
+import { useMemo, useState, useEffect } from "react";
 
-import { useMemo, useState } from "react";
 import Sidebar from "../../components/Sidebar/Sidebar";
 import Section from "../../components/Section/Section";
 import books from "../../data/sampleBooks";
@@ -11,49 +13,96 @@ import FeaturedBanner from "../../components/FeaturedBanner/FeaturedBanner";
 import NewBookCollections from "../../components/NewBookCollections/NewBookCollections";
 import { Link } from "react-router-dom";
 import { Star, Filter, X } from "lucide-react";
+import api from "../../api"; 
+
+const transformBook = (book, index) => ({
+  id: book.id || index,
+  title: book.name || "Untitled",
+  author: book.author || book.authors || "Unknown Author",
+  image: book.book_cover_url ||
+    "https://via.placeholder.com/150x220.png?text=No+Cover",
+  rating: book.average_rating || 0,
+  ratingCount: book.rating_count || 0,
+  summary: book.short_description || "",
+  category: book.category || "",
+  pdfLink: book.pdf_file_url || "",
+});
 
 export default function Home() {
   const [filter, setFilter] = useState(null);
   const [openFilters, setOpenFilters] = useState(false); // mobile sidebar
 
-  const allBooks = useMemo(
-    () => [...(books?.recommended || []), ...(books?.popular || [])],
-    []
-  );
+  const [books, setBooks] = useState({ recommended: [], popular: [] });
+  const [loading, setLoading] = useState(true);
 
-  const filtered = useMemo(() => {
-    if (!filter) return [];
+  // const filtered = useMemo(() => {
+  //   if (!filter) return [];
 
-    if (filter.type === "all") return allBooks;
+  //   if (filter.type === "all") return allBooks;
 
-    if (filter.type === "category") {
-      return allBooks.filter(
-        (b) =>
-          (b.category || "").toLowerCase() ===
-          (filter.value || "").toLowerCase()
-      );
-    }
+  //   if (filter.type === "category") {
+  //     return allBooks.filter(
+  //       (b) =>
+  //         (b.category || "").toLowerCase() ===
+  //         (filter.value || "").toLowerCase()
+  //     );
+  //   }
 
-    if (filter.type === "subcategory") {
-      return allBooks.filter(
-        (b) =>
-          (b.category || "").toLowerCase() ===
-          (filter.parent || "").toLowerCase()
-      );
-    }
+  //   if (filter.type === "subcategory") {
+  //     return allBooks.filter(
+  //       (b) =>
+  //         (b.category || "").toLowerCase() ===
+  //         (filter.parent || "").toLowerCase()
+  //     );
+  //   }
 
-    return allBooks;
-  }, [filter, allBooks]);
+  //   return allBooks;
+  // }, [filter, allBooks]);
+  const fetchBooks = async () => {
+      try {
+        const [popularRes , recommendedRes] = await Promise.all([
+          api.get("/book/popular-books"),
+          api.get("/book/recommended-books"),
+        ]);
+
+        const recommendedBooks = (recommendedRes.data.data || []).map(
+          transformBook
+        );
+        const popularBooks = (popularRes.data.data || []).map(transformBook);
+
+        setBooks({
+          recommended: recommendedBooks,
+          popular: popularBooks,
+        });
+      } catch (err) {
+        console.error("Failed to fetch books:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+  useEffect(() => {
+    console.log("Fetching book data for id:");
+    fetchBooks();
+  }, []);
+
+ 
 
   const renderStars = (rating = 0) =>
     [...Array(5)].map((_, i) => (
       <Star
         key={i}
-        className={`w-4 h-4 ${
-          i < (rating || 0) ? "text-yellow-500 fill-yellow-500" : "text-gray-300"
-        }`}
+        className={`w-4 h-4 ${i < (rating || 0) ? "text-yellow-500 fill-yellow-500" : "text-gray-300"
+          }`}
       />
     ));
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <p className="text-gray-500 text-lg">Loading books...</p>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -134,13 +183,12 @@ export default function Home() {
                             </span>
                           </div>
                           <p
-                            className={`text-xs font-medium mt-2 ${
-                              (b.title || "")
+                            className={`text-xs font-medium mt-2 ${(b.title || "")
                                 .toLowerCase()
                                 .includes("empire")
                                 ? "text-red-500"
                                 : "text-green-600"
-                            }`}
+                              }`}
                           >
                             {(b.title || "").toLowerCase().includes("empire")
                               ? "Out Of Stock"

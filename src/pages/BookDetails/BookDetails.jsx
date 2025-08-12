@@ -1,6 +1,4 @@
-import React, { useEffect, useState } from "react";
-import { useParams, useNavigate, Link, useLocation } from "react-router-dom";
-import { Star, ChevronDown, Users, PlayCircle, Download } from "lucide-react";
+
 
 /**
  * Per‑book reviews (examples).
@@ -59,79 +57,131 @@ const REVIEWS_DB = {
   },
   // No reviews entries for other ids on purpose (e.g., "8", "11")
 };
+import { useParams, useNavigate, Link } from "react-router-dom";
+import {
+  Star,
+  ChevronDown,
+  Users,
+  PlayCircle,
+  Download,
+} from "lucide-react";
+import React, { useEffect, useState } from "react";
+import api from "../../api";
 
 export default function BookDetails() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const location = useLocation();
   const [bookData, setBookData] = useState(null);
   const [relatedBooks, setRelatedBooks] = useState([]);
   const [showFullSummary, setShowFullSummary] = useState(false);
+  const [loading, setLoading] = useState(true);
 
+  // New states for reviews and rating counts
+  const [reviews, setReviews] = useState([]);
+  const [ratingCounts, setRatingCounts] = useState({
+    1: 0,
+    2: 0,
+    3: 0,
+    4: 0,
+    5: 0,
+  });
+
+  // Normalize function (unchanged)
   const normalize = (b) => {
     if (!b) return null;
     return {
       id: b.id,
-      title: b.title,
-      authors: b.authors || b.author || "Unknown",
-      coverImage: b.coverImage || b.image,
-      rating: b.rating ?? 0,
-      ratingCount: b.ratingCount ?? 0,
-      reviews: b.reviews ?? null,
-      publisher: b.publisher ?? "—",
-      publishDate: b.publishDate ?? "",
-      category: b.category ?? "General",
-      summary: b.summary ?? b.description ?? "",
-      pdfLink: b.pdfLink ?? "#",
-      wants: b.wants ?? 0,
-      status: b.status,
-      image: b.image,
+      title: b.name || "Untitled",
+      authors: b.author || "Unknown",
+      coverImage: b.book_cover_url || "",
+      rating: b.average_rating || 0,
+      ratingCount: b.rating_count || 0,
+      reviews: null, // we'll override later with real review count
+      publisher: b.publisher || "—",
+      publishDate: b.publish_date || "",
+      category: b.category?.category_name || "General",
+      summary: b.short_description || "",
+      pdfLink: b.pdf_file_url || "#",
+      wants: 0,
+      status: b.status || "Available",
+      image: b.book_cover_url || "",
     };
   };
 
-  useEffect(() => {
-    const sliderBook = location.state?.fromSlider;
-    if (sliderBook && String(sliderBook.id) === String(id)) {
-      setBookData(normalize(sliderBook));
+
+
+  // Fetch book details and related books as before
+  const fetchBookData = async () => {
+    setLoading(true);
+    try {
+      const res = await api.get(`/book/retrieve/${id}`);
+      const book = normalize(res.data.data || res.data);
+      setBookData(book);
+
+      const relatedRes = await api.get(`/book/related-books/${id}`);
+      const related = (relatedRes.data.data || relatedRes.data)
+        .filter((b) => String(b.id) !== String(id))
+        .slice(0, 4)
+        .map(normalize)
+        .filter(Boolean);
+      setRelatedBooks(related);
+
+      // Fetch reviews for this book
+      const reviewsRes = await api.get(`/review/${id}/list`);
+      setReviews(reviewsRes.data.data || []);
+
+      // Fetch rating star counts
+      const ratingCountRes = await api.get(`/review/rating-star-count/${id}`);
+      setRatingCounts(ratingCountRes.data || {
+        1: 0, 2: 0, 3: 0, 4: 0, 5: 0
+      });
+
+    } catch (error) {
+      console.error("Failed to fetch data:", error);
+      setBookData(null);
+      setRelatedBooks([]);
+      setReviews([]);
+      setRatingCounts({1:0,2:0,3:0,4:0,5:0});
+    } finally {
+      setLoading(false);
     }
+  };
 
-    fetch("/books.json")
-      .then((res) => res.json())
-      .then((data) => {
-        const found = data.find((b) => String(b.id) === String(id));
-        if (found) {
-          if (!(sliderBook && String(sliderBook.id) === String(id))) {
-            setBookData(normalize(found));
-          }
-          const others = data
-            .filter((b) => String(b.id) !== String(id))
-            .slice(0, 4)
-            .map(normalize)
-            .filter(Boolean);
-          setRelatedBooks(others);
-        } else {
-          const others = (data || [])
-            .filter((b) => String(b.id) !== String(id))
-            .slice(0, 4)
-            .map(normalize)
-            .filter(Boolean);
-          setRelatedBooks(others);
-        }
-      })
-      .catch(() => {});
-  }, [id, location.state]);
+  useEffect(() => {
+    fetchBookData();
+  }, [id]);
 
+  // Helper to render stars based on average rating
   const renderStars = (rating) =>
     [...Array(5)].map((_, i) => (
       <Star
         key={i}
-        className={`w-4 h-4 ${
-          i < (rating || 0) ? "text-yellow-500 fill-yellow-500" : "text-gray-300"
-        }`}
+        className={`w-4 h-4 ${i < (rating || 0) ? "text-yellow-500 fill-yellow-500" : "text-gray-300"}`}
       />
     ));
 
-  if (!bookData) {
+  // Helper to render rating count bars (example)
+  const renderRatingBars = () => {
+    const maxCount = Math.max(...Object.values(ratingCounts), 1); // avoid div by zero
+    return (
+      <div className="mt-4 space-y-1">
+        {[5, 4, 3, 2, 1].map((star) => (
+          <div key={star} className="flex items-center gap-2">
+            <span className="w-8 text-sm font-semibold">{star} star</span>
+            <div className="flex-1 h-4 bg-gray-200 rounded overflow-hidden">
+              <div
+                className="h-4 bg-yellow-400"
+                style={{ width: `${(ratingCounts[star] / maxCount) * 100}%` }}
+              ></div>
+            </div>
+            <span className="w-6 text-right text-sm">{ratingCounts[star]}</span>
+          </div>
+        ))}
+      </div>
+    );
+  };
+
+  if (loading) {
     return (
       <div className="text-center text-gray-600 py-20">
         Loading book details...
@@ -149,6 +199,14 @@ export default function BookDetails() {
     ? (localReviewCount > 0 ? `${localReviewCount} Reviews` : "No Reviews")
     : "No Reviews";
   // === END
+
+  if (!bookData) {
+    return (
+      <div className="text-center text-red-600 py-20">
+        Failed to load book details.
+      </div>
+    );
+  }
 
   return (
     <div className="bg-white py-10 px-4 sm:px-6 lg:px-8">
@@ -218,6 +276,8 @@ export default function BookDetails() {
               )}
             </div>
           )}
+
+          {/* Rating Bars */}
         </div>
 
         {/* RIGHT COLUMN */}
@@ -249,6 +309,7 @@ export default function BookDetails() {
             <span className="text-gray-400">|</span>
             <span className="text-sm text-gray-500">
               {reviewsTextDisplay}
+              {reviews.length} Reviews
             </span>
           </div>
 
@@ -268,9 +329,8 @@ export default function BookDetails() {
               {(bookData.summary || "").split(".").length > 1 && (
                 <button
                   onClick={() => setShowFullSummary(!showFullSummary)}
-                  className={`ml-2 font-semibold hover:underline transition ${
-                    showFullSummary ? "text-gray-400" : "text-sky-600"
-                  }`}
+                  className={`ml-2 font-semibold hover:underline transition ${showFullSummary ? "text-gray-400" : "text-sky-600"
+                    }`}
                 >
                   {showFullSummary ? "Read Less" : "Read More"}
                 </button>

@@ -2,11 +2,37 @@ import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import { useEffect, useState } from "react";
 import books from "../../data/sampleBooks";
 import { Link } from "react-router-dom";
+import api from "../../api";
 
 const FeaturedBanner = () => {
-  const featured = books.featuredBooks;
+  const [featured, setFeatured] = useState([]);
   const [current, setCurrent] = useState(0);
 
+  // Fetch featured books from API
+  useEffect(() => {
+    const fetchFeaturedBooks = async () => {
+      try {
+        const res = await api.get("/featured-books/list");
+        const rawBooks = res.data; // array of {id, book: {...}}
+        const normalizedBooks = rawBooks.map((item) => ({
+          id: item.book.id,
+          title: item.book.name || "Untitled",
+          author: item.book.author || "Unknown",
+          image: item.book.book_cover_url || "",
+          rating: item.book.average_rating || 0,
+          availability: item.book.available_copies > 0 ? "Available" : "Out Of Stock",
+          description: item.book.short_description || "",
+        }));
+        setFeatured(normalizedBooks);
+      } catch (err) {
+        console.error("Error fetching featured books:", err);
+      }
+    };
+
+    fetchFeaturedBooks();
+  }, []);
+
+  // Auto-slide every 5s
   useEffect(() => {
     if (featured.length === 0) return;
     const interval = setInterval(() => {
@@ -16,7 +42,7 @@ const FeaturedBanner = () => {
   }, [featured.length]);
 
   if (featured.length === 0) {
-    return null; // Don't render anything if there are no featured books
+    return null; // Don't render if no books
   }
 
   const prevSlide = () => {
@@ -28,7 +54,9 @@ const FeaturedBanner = () => {
   };
 
   const currentBook = featured[current];
-  const isOutOfStock = currentBook.availability.toLowerCase().includes("out of stock");
+  const isOutOfStock = currentBook.availability
+    .toLowerCase()
+    .includes("out of stock");
 
   return (
     <div className="bg-white py-20 px-4 sm:px-6 lg:px-8 relative flex justify-center items-center">
@@ -61,7 +89,7 @@ const FeaturedBanner = () => {
 
           {/* THIS IS THE FIX: Link now uses the correct book ID */}
           <Link
-            to={`/book/${currentBook.id}`} 
+            to={`/book/${currentBook.id}`}
             className="inline-block px-5 py-2 border border-sky-600 text-sky-600 rounded hover:bg-sky-600 hover:text-white transition-all text-sm"
           >
             VIEW DETAILS →

@@ -164,10 +164,10 @@
 // }
 
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Star, ChevronRight, ChevronLeft } from "lucide-react";
-
+import api from "../../api";
 const books = [
   {
     id: 1,
@@ -255,7 +255,37 @@ const books = [
 export default function NewBookCollections() {
   const [visibleCount, setVisibleCount] = useState(6);
   const navigate = useNavigate();
+  const [books, setBooks] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
+  useEffect(() => {
+    const fetchBooks = async () => {
+      try {
+        const response = await api.get("/book/new-collection");
+        const rawBooks = response.data.data || [];
+
+        // Normalize data
+        const normalizedBooks = rawBooks.map(book => ({
+          id: book.id,
+          title: book.name || book.title || "Untitled",
+          author: book.authors || book.author || "Unknown",
+          image: book.book_cover_url || book.image || "",
+          rating: book.average_rating || book.rating || 0,
+          status: book.available_copies > 0 ? "Available" : "Out Of Stock",
+        }));
+        setBooks(normalizedBooks);
+      } catch (err) {
+        setError("Failed to fetch books");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchBooks();
+  }, []);
+  if (loading) return <p>Loading...</p>;
+  if (error) return <p>{error}</p>;
   const showMore = () => {
     setVisibleCount((prev) => Math.min(prev + 4, books.length));
   };
@@ -312,16 +342,14 @@ export default function NewBookCollections() {
               {[...Array(5)].map((_, i) => (
                 <Star
                   key={i}
-                  className={`w-4 h-4 ${
-                    i < book.rating ? "text-yellow-400 fill-yellow-400" : "text-gray-300"
-                  }`}
+                  className={`w-4 h-4 ${i < book.rating ? "text-yellow-400 fill-yellow-400" : "text-gray-300"
+                    }`}
                 />
               ))}
             </div>
             <p
-              className={`text-xs font-semibold mt-1 ${
-                book.status === "Available" ? "text-green-500" : "text-red-500"
-              }`}
+              className={`text-xs font-semibold mt-1 ${book.status === "Available" ? "text-green-500" : "text-red-500"
+                }`}
             >
               {book.status}
             </p>
