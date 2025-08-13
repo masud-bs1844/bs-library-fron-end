@@ -16,20 +16,20 @@ import AllGenres from './pages/AllGenres/AllGenres';
 function App() {
   return (
     <BrowserRouter>
-    < Navbar />
-          <main className="flex-grow">
-      <Routes>
-                <Route element={<Layout />}>
-        <Route path="/" element={<Home />} />
-                  <Route path="/book/:id" element={<BookDetails />} /> {/* <-- ADD THE NEW ROUTE */}
-                  <Route path="/borrowed" element={<Borrowed />} />
-                  <Route path="/fill-up-form" element={<FillUpForm />} />
-                  <Route path="/dashboard" element={<Dashboard />} />
-                  <Route path="/upload" element={<UploadBookPage />} />
-                  <Route path="/all-genres" element={<AllGenres />} />
-                          </Route>
-      </Routes>
-            </main>
+      < Navbar />
+      <main className="flex-grow">
+        <Routes>
+          <Route element={<Layout />}>
+            <Route path="/" element={<Home />} />
+            <Route path="/book/:id" element={<BookDetails />} /> {/* <-- ADD THE NEW ROUTE */}
+            <Route path="/borrowed" element={<Borrowed />} />
+            <Route path="/fill-up-form/:id" element={<FillUpForm />} />
+            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/upload" element={<UploadBookPage />} />
+            <Route path="/all-genres" element={<AllGenres />} />
+          </Route>
+        </Routes>
+      </main>
     </BrowserRouter>
   );
 }
