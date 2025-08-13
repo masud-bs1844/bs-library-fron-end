@@ -53,7 +53,7 @@
   },
   {
     "id": 5,
-    "title": "JavaScript and jQuery: Interactive Front-End Web Development",
+    "title": "JavaScript and jQuery",
     "authors": "Jon Duckett",
     "publisher": "Republika",
     "publishDate": "October 19, 2013",
@@ -66,7 +66,7 @@
   },
   {
     "id": 6,
-    "title": "AI First: The Playbook for a Future-Proof Business and Brand",
+    "title": "AI First: Future-Proof Business and Brand",
     "authors": " Adam Brotman & Andy Sack ",
     "publisher": "Gramedia",
     "publishDate": "June 24, 2025",
@@ -92,7 +92,7 @@
   },
   {
     "id": 8,
-    "title": "Thinking with Type: A Critical Guide for Designers, Writers, Editors, and Students (3rd Edition, Revised and Expanded)",
+    "title": "Thinking with Type: A Critical Guide for Designers",
     "authors": "Ellen Lupton",
     "publisher": "Crown",
     "publishDate": "March 12, 2024",
@@ -105,7 +105,7 @@
   },
   {
     "id": 9,
-    "title": "Empire of AI: Dreams and Nightmares in Sam Altman's OpenAI ",
+    "title": "Empire of AI",
     "authors": "Karen Hao",
     "publisher": "Unknown",
     "publishDate": "May 20, 2025",
@@ -118,7 +118,7 @@
   },
   {
     "id": 10,
-    "title": "One Million Followers: How I Built a Massive Social Following in 30 Days ",
+    "title": "One Million Followers",
     "authors": " Brendan Kane",
     "publisher": "Unknown",
     "publishDate": "October 9, 2018",
@@ -131,7 +131,7 @@
   },
   {
     "id": 11,
-    "title": "AI for Nonprofits: Putting Artificial Intelligence to Work for Your Cause",
+    "title": "AI for Nonprofits",
     "authors": "Darian Rodriguez Heyman &  Cheryl Contee",
     "publisher": "Unknown",
     "publishDate": "",

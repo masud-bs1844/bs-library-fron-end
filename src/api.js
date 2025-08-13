@@ -4,7 +4,7 @@ import axios from 'axios';
 const API_BASE_URL = 'http://172.16.227.173:8000/api';
 
 // Get JWT token from localStorage or any auth store
-const token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vMTcyLjE2LjIyNy4xNzM6ODAwMC9hcGkvbG9naW4iLCJpYXQiOjE3NTQ5ODk0OTgsImV4cCI6MTc1NTA3NTg5OCwibmJmIjoxNzU0OTg5NDk4LCJqdGkiOiJ1R2NZV2ZiY25XVGd5MmZLIiwic3ViIjoiMSIsInBydiI6IjIzYmQ1Yzg5NDlmNjAwYWRiMzllNzAxYzQwMDg3MmRiN2E1OTc2ZjcifQ.-QybP9DYNdA1u1PGkz5CtUbqzuXzQu3XHUHFMXiu3ew";
+const token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vMTcyLjE2LjIyNy4xNzM6ODAwMC9hcGkvbG9naW4iLCJpYXQiOjE3NTUwNzk0NDMsImV4cCI6MTc1NTE2NTg0MywibmJmIjoxNzU1MDc5NDQzLCJqdGkiOiJ2S1VCRTM5VGRzTmhRdkVjIiwic3ViIjoiMSIsInBydiI6IjIzYmQ1Yzg5NDlmNjAwYWRiMzllNzAxYzQwMDg3MmRiN2E1OTc2ZjcifQ.2WyZWsjqlf41oSWEcJYmxTvtnRrzE8UyMu3OwjPkpSM";
 
 const api = axios.create({
   baseURL: API_BASE_URL,

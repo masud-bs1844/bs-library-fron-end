@@ -12,6 +12,8 @@ import FillUpForm from './components/FillUpForm/FillUpForm';
 import Dashboard from './pages/Dashboad/Dashboad';
 import UploadBookPage from './components/Upload/UploadBookPage';
 import AllGenres from './pages/AllGenres/AllGenres';
+import ManageBooks from './pages/ManageBooks/ManageBooks';
+import ManageCategory from './pages/ManageCategory/ManageCategory';
 
 function App() {
   return (
@@ -27,6 +29,8 @@ function App() {
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/upload" element={<UploadBookPage />} />
             <Route path="/all-genres" element={<AllGenres />} />
+            <Route path="/manage-books" element={<ManageBooks />} />
+            <Route path="/manage-category" element={<ManageCategory />} />
           </Route>
         </Routes>
       </main>

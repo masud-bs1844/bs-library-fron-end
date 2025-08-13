@@ -52,7 +52,7 @@ const books = {
   popular: [
     {
       id: "5",
-      title: "JavaScript and jQuery: Interactive Front-End Web Development",
+      title: "JavaScript and jQuery",
       author: "Jon Duckett",
       image: "https://res.cloudinary.com/dbm4aqhwi/image/upload/v1754631369/d4_illzl7.jpg",
         rating: 4,
@@ -65,7 +65,7 @@ const books = {
     },
     {
       id: "6",
-      title: "AI First: The Playbook for a Future-Proof Business and Brand",
+      title: "AI First: Future-Proof Business and Brand",
       author: "Adam Brotman & Andy Sack",
       image: "https://res.cloudinary.com/dbm4aqhwi/image/upload/v1754632294/ml_ai2_dyr9mu.jpg",
       rating: 4,
@@ -88,7 +88,7 @@ const books = {
     },
     {
       id: "8",
-      title: "Thinking with Type: A Critical Guide for Designers, Writers, Editors, and Students (3rd Edition, Revised and Expanded)",
+      title: "Thinking with Type: A Critical Guide for Designers",
       author: "Ellen Lupton",
       image: "https://res.cloudinary.com/dbm4aqhwi/image/upload/v1754633627/design1_m4xm7t.jpg",
       rating: 5,
@@ -105,7 +105,7 @@ const books = {
     id: "9",
     image: "https://res.cloudinary.com/dbm4aqhwi/image/upload/v1754634541/ai3_ob4vyd.jpg",
     author: "Karen Hao",
-    title: "Empire of AI: Dreams and Nightmares in Sam Altman's OpenAI ",
+    title: "Empire of AI",
     description:
       "An Instant New York Times Bestseller Excellent and deeply reported.” —Tim Wu, The New York Times Startling and intensely researched.",
     availability: "Available Now",
@@ -114,7 +114,7 @@ const books = {
     id: "10",
     image: "https://res.cloudinary.com/dbm4aqhwi/image/upload/v1754640002/marketing_b4gnya.jpg",
     author: " Brendan Kane",
-    title: "One Million Followers: How I Built a Massive Social Following in 30 Days ",
+    title: "One Million Followers",
     description:
       "Over 60 billion online messages are sent on digital platforms every day, and only a select few succeed in the mad scramble for customer attention.",
     availability: "Available Now",
@@ -123,7 +123,7 @@ const books = {
     id: "11",
     image: "https://res.cloudinary.com/dbm4aqhwi/image/upload/v1754641707/ai4_ckmuk3.jpg",
     author: " Darian Rodriguez Heyman &  Cheryl Contee",
-    title: "AI for Nonprofits: Putting Artificial Intelligence to Work for Your Cause",
+    title: "AI for Nonprofits",
     description:
       "A collection of actionable AI tools you can apply immediately to help your nonprofit drive social impact and change.In AI for Nonprofits: Putting Artificial Intelligence to Work for Your Cause, a team of leading nonprofit experts and social entrepreneurs delivers a startlingly insightful, strategic “how-to guide” for nonprofit and foundation leaders.",
     availability: "Available Now",
