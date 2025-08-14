@@ -630,11 +630,11 @@ export default function FillUpForm() {
                 <CalendarDays size={18} /> Dashboard
               </a>
             </li>
-            <li>
+            {/* <li>
               <a href="/upload" className="flex items-center gap-2 text-gray-700 hover:text-sky-500 hover:underline underline-offset-4">
                 <Upload size={18} /> Upload Books
               </a>
-            </li>
+            </li> */}
             <li>
               <a href={`/fillup-form/${id}`} className="flex items-center gap-2 text-sky-600 font-medium">
                 <BookOpen size={18} /> Fill Up Form
@@ -652,7 +652,7 @@ export default function FillUpForm() {
             </li>
             <li>
               <a href="/help" className="flex items-center gap-2 text-gray-700 hover:text-sky-500 hover:underline underline-offset-4">
-                <HelpCircle size={18} /> Help
+                <HelpCircle size={18} /> Settings
               </a>
             </li>
           </ul>

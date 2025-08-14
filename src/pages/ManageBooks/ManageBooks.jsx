@@ -1462,6 +1462,7 @@ export default function ManageBooks() {
   const emptyForm = {
     title: "",
     author: "",
+    category: "",
     copies: "",
     coverFile: null,
     coverUrl: "",
@@ -1472,12 +1473,14 @@ export default function ManageBooks() {
     audioFile: null,
     audioUrl: "",
     audioLoading: false,
+    description: "",
   };
   const [form, setForm] = useState(emptyForm);
 
   const rowToForm = (row) => ({
     title: row.title && row.title !== "—" ? row.title : "",
     author: row.author && row.author !== "—" ? row.author : "",
+    category: row.category && row.category !== "—" ? row.category : "",
     copies:
       row.copies !== undefined && row.copies !== "—" ? String(row.copies) : "",
     coverFile: null,
@@ -1489,6 +1492,7 @@ export default function ManageBooks() {
     audioFile: null,
     audioUrl: row.audio || "",
     audioLoading: false,
+    description: row.description || "",
   });
 
   const onOpenCreate = () => {
@@ -1560,6 +1564,9 @@ export default function ManageBooks() {
     }
   };
 
+  // NEW: Upload popup
+  const [uploadOpen, setUploadOpen] = useState(false);
+
   // NEW: 2s "Saved" toast
   const [savedToast, setSavedToast] = useState(false);
 
@@ -1576,10 +1583,12 @@ export default function ManageBooks() {
         const row = { ...next[editingIndex] };
         row.title = form.title || "—";
         row.author = form.author || "—";
+        row.category = form.category || "—";
         row.copies = form.copies || "—";
         row.cover = form.coverUrl || row.cover || PLACEHOLDER_IMG;
         row.pdf = form.pdfUrl || row.pdf || "";
         row.audio = form.audioUrl || row.audio || "";
+        row.description = form.description || "";
         row.updatedOn = toYMD(new Date().toISOString());
         next[editingIndex] = row;
         return next;
@@ -1589,12 +1598,13 @@ export default function ManageBooks() {
         id: `${Date.now()}_${Math.random().toString(36).slice(2, 7)}`,
         title: form.title || "—",
         author: form.author || "—",
-        category: "—",
+        category: form.category || "—",
         copies: form.copies || "—",
         updatedOn: toYMD(new Date().toISOString()),
         cover: form.coverUrl || PLACEHOLDER_IMG,
         pdf: form.pdfUrl || "",
         audio: form.audioUrl || "",
+        description: form.description || "",
       };
       setDisplayed((prev) => [newRow, ...prev]);
     }
@@ -1637,13 +1647,23 @@ export default function ManageBooks() {
         <section className="bg-white rounded-lg shadow overflow-hidden">
           <div className="flex items-center justify-between px-4 py-3">
             <span className="text-sm font-medium text-gray-700">Books List</span>
-            <button
-              type="button"
-              onClick={onOpenCreate}
-              className="inline-flex items-center gap-2 rounded-md bg-sky-600 px-3 py-2 text-sm font-semibold text-white shadow hover:bg-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-400"
-            >
-              <Plus size={16} /> Add Book
-            </button>
+            {/* RIGHT BUTTONS */}
+            <div className="flex items-center gap-2">
+              {/* <button
+                type="button"
+                onClick={() => setUploadOpen(true)}
+                className="inline-flex items-center gap-2 rounded-md bg-gray-100 px-3 py-2 text-sm font-semibold text-gray-700 shadow hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-sky-400"
+              >
+                <Upload size={16} /> Upload
+              </button> */}
+              <button
+                type="button"
+                onClick={onOpenCreate}
+                className="inline-flex items-center gap-2 rounded-md bg-sky-600 px-3 py-2 text-sm font-semibold text-white shadow hover:bg-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-400"
+              >
+                <Plus size={16} /> Add Book
+              </button>
+            </div>
           </div>
 
           <div className="px-4 pb-4">
@@ -1759,25 +1779,31 @@ export default function ManageBooks() {
                     />
                   </div>
 
-                  {/* 2) Author */}
+                  {/* 2) Author (text input, not select) */}
                   <div>
                     <label className="block text-sm text-gray-700 mb-1">Author</label>
-                    <select
+                    <input
                       name="author"
                       value={form.author}
                       onChange={handleChange}
-                      className="w-full rounded border border-gray-300 px-3 py-2 appearance-none focus:outline-none focus:ring-2 focus:ring-sky-400"
-                    >
-                      <option value="">Select</option>
-                      {withCurrent(options.authors, form.author).map((a) => (
-                        <option key={a} value={a}>
-                          {a}
-                        </option>
-                      ))}
-                    </select>
+                      placeholder="author name"
+                      className="w-full rounded border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-sky-400"
+                    />
                   </div>
 
-                  {/* 3) No of copy */}
+                  {/* 3) Category (text input, not select) */}
+                  <div>
+                    <label className="block text-sm text-gray-700 mb-1">Category</label>
+                    <input
+                      name="category"
+                      value={form.category}
+                      onChange={handleChange}
+                      placeholder="category"
+                      className="w-full rounded border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-sky-400"
+                    />
+                  </div>
+
+                  {/* 4) No of copy */}
                   <div>
                     <label className="block text-sm text-gray-700 mb-1">No of copy</label>
                     <input
@@ -1789,7 +1815,7 @@ export default function ManageBooks() {
                     />
                   </div>
 
-                  {/* 4) Cover Image with 3s loader then preview */}
+                  {/* 5) Cover Image with 3s loader then preview */}
                   <div>
                     <label className="block text-sm text-gray-700 mb-1">
                       Cover Image (.png, .jpg)
@@ -1817,7 +1843,7 @@ export default function ManageBooks() {
                     </div>
                   </div>
 
-                  {/* 5) Book File (PDF) with loader */}
+                  {/* 6) Book File (PDF) with loader */}
                   <div>
                     <label className="block text-sm text-gray-700 mb-1">
                       Book File (.pdf)
@@ -1841,7 +1867,7 @@ export default function ManageBooks() {
                     </div>
                   </div>
 
-                  {/* 6) Audio Clip with loader */}
+                  {/* 7) Audio Clip with loader */}
                   <div>
                     <label className="block text-sm text-gray-700 mb-1">
                       Audio Clip (mp3/wav/m4a)
@@ -1864,6 +1890,19 @@ export default function ManageBooks() {
                       </div>
                     </div>
                   </div>
+
+                  {/* 8) Description */}
+                  <div className="md:col-span-2">
+                    <label className="block text-sm text-gray-700 mb-1">Description</label>
+                    <textarea
+                      name="description"
+                      value={form.description}
+                      onChange={handleChange}
+                      rows={4}
+                      placeholder="short description / notes"
+                      className="w-full rounded border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-sky-400"
+                    />
+                  </div>
                 </div>
               </div>
 
@@ -1882,6 +1921,42 @@ export default function ManageBooks() {
                   className="rounded-md px-5 py-2 text-sm font-semibold text-white bg-sky-600 hover:bg-sky-500 disabled:opacity-70"
                 >
                   {mode === "edit" ? (saving ? "Updating…" : "Update") : saving ? "Saving…" : "Save"}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ---------- Upload Popup ---------- */}
+      {uploadOpen && (
+        <div
+          className="fixed inset-0 z-50"
+          aria-modal="true"
+          role="dialog"
+          onClick={(e) => {
+            if (e.target === e.currentTarget) setUploadOpen(false);
+          }}
+        >
+          <div className="absolute inset-0 bg-black/50 opacity-0 animate-[fadeIn_.2s_ease-out_forwards]" />
+          <div className="absolute inset-0 flex items-center justify-center px-4">
+            <div className="w-full max-w-md rounded-lg bg-white shadow-lg opacity-0 translate-y-2 animate-[popIn_.2s_ease-out_forwards]">
+              <div className="px-6 py-4 border-b">
+                <h3 className="text-lg font-semibold text-gray-800">Upload</h3>
+              </div>
+              <div className="px-6 py-5 space-y-3">
+                <p className="text-sm text-gray-600">
+                  Use the form inside <span className="font-medium">Add / Edit book</span> to attach the
+                  cover image, PDF, and audio clip. This popup is just a quick note for users.
+                </p>
+              </div>
+              <div className="px-6 py-4 bg-white flex justify-end">
+                <button
+                  type="button"
+                  onClick={() => setUploadOpen(false)}
+                  className="rounded-md px-4 py-2 text-sm font-medium bg-gray-100 text-gray-700 hover:bg-gray-200"
+                >
+                  Close
                 </button>
               </div>
             </div>
@@ -1972,6 +2047,7 @@ export default function ManageBooks() {
     </div>
   );
 }
+
 
 
 
