@@ -13,6 +13,7 @@ import {
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import api from "../../api";
+import AdminDashboardSidebar from "../../components/AdminDashboardSidebar/AdminDashboardSidebar";
 
 export default function Dashboard() {
   const [statistics, setStatistics] = useState();
@@ -37,90 +38,7 @@ export default function Dashboard() {
   return (
     <div className="min-h-screen flex bg-gray-100">
       {/* Sidebar */}
-      <aside className="w-64 bg-white shadow-md px-4 py-6 flex flex-col justify-between">
-        <div>
-          <h2 className="text-xl font-bold mb-6">Library</h2>
-          <ul className="space-y-3">
-            <li>
-              <Link
-                to="/dashboard"
-                className="flex items-center gap-2 text-sky-600 font-medium"
-              >
-                <CalendarDays size={18} /> Dashboard
-              </Link>
-            </li>
-
-            {/* NEW — Manage Books */}
-            <li>
-              <Link
-                to="/manage-books"
-                className="flex items-center gap-2 text-gray-700 hover:text-sky-500 transition-colors"
-              >
-                <BookOpen size={18} /> Manage Books
-              </Link>
-            </li>
-
-            {/* NEW — Manage Category */}
-            <li>
-              <Link
-                to="/manage-category"
-                className="flex items-center gap-2 text-gray-700 hover:text-sky-500 transition-colors"
-              >
-                <Layers size={18} /> Manage Category
-              </Link>
-            </li>
-
-            {/* <li>
-              <Link
-                to="/upload"
-                className="flex items-center gap-2 text-gray-700 hover:text-sky-500 transition-colors"
-              >
-                <Upload size={18} /> Upload Books
-              </Link>
-            </li> */}
-            <li>
-              <Link
-                to="/fill-up-form"
-                className="flex items-center gap-2 text-gray-700 hover:text-sky-500 transition-colors"
-              >
-                <BookOpen size={18} /> Fill Up Form
-              </Link>
-            </li>
-            <li>
-              <Link
-                to="/members"
-                className="flex items-center gap-2 text-gray-700 hover:text-sky-500 transition-colors"
-              >
-                <Users size={18} /> Member
-              </Link>
-            </li>
-            <li>
-              <Link
-                to="/borrowed"
-                className="flex items-center gap-2 text-gray-700 hover:text-sky-500 transition-colors"
-              >
-                <BookOpen size={18} /> Check-out Books
-              </Link>
-            </li>
-            <li>
-              <Link
-                to="/help"
-                className="flex items-center gap-2 text-gray-700 hover:text-sky-500 transition-colors"
-              >
-                <HelpCircle size={18} /> Help
-              </Link>
-            </li>
-          </ul>
-        </div>
-        <div>
-          <Link
-            to="/logout"
-            className="flex items-center gap-2 text-red-600 font-medium hover:underline underline-offset-4"
-          >
-            <LogOut size={18} /> Logout
-          </Link>
-        </div>
-      </aside>
+      <AdminDashboardSidebar />
 
       {/* Main */}
       <main className="flex-1 p-6 space-y-6">
