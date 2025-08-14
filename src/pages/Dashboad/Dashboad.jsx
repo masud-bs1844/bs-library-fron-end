@@ -70,14 +70,14 @@ export default function Dashboard() {
               </Link>
             </li>
 
-            <li>
+            {/* <li>
               <Link
                 to="/upload"
                 className="flex items-center gap-2 text-gray-700 hover:text-sky-500 transition-colors"
               >
                 <Upload size={18} /> Upload Books
               </Link>
-            </li>
+            </li> */}
             <li>
               <Link
                 to="/fill-up-form"
