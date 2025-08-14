@@ -14,6 +14,10 @@ import UploadBookPage from './components/Upload/UploadBookPage';
 import AllGenres from './pages/AllGenres/AllGenres';
 import ManageBooks from './pages/ManageBooks/ManageBooks';
 import ManageCategory from './pages/ManageCategory/ManageCategory';
+import AuthCallback from './pages/auth/AuthCallback';
+import ProtectedRoute from './routes/ProtectedRoute';
+import DashRouter from './routes/DashRouter';
+import UserDashboard from './pages/user/UserDashboard';
 
 function App() {
   return (
@@ -26,11 +30,30 @@ function App() {
             <Route path="/book/:id" element={<BookDetails />} /> {/* <-- ADD THE NEW ROUTE */}
             <Route path="/borrowed" element={<Borrowed />} />
             <Route path="/fill-up-form/:id" element={<FillUpForm />} />
-            <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/upload" element={<UploadBookPage />} />
             <Route path="/all-genres" element={<AllGenres />} />
             <Route path="/manage-books" element={<ManageBooks />} />
             <Route path="/manage-category" element={<ManageCategory />} />
+            <Route path="/auth/callback" element={<AuthCallback />} />
+            <Route
+              path="/dashboard"
+              element={
+                <ProtectedRoute allowedRoles={["admin", "user"]}>
+                  <DashRouter />
+                </ProtectedRoute>
+              }
+            />
+            <Route path="/admin" element={
+              <ProtectedRoute allowedRoles={["admin"]}>
+                <Dashboard />
+              </ProtectedRoute>
+            } />
+
+            <Route path="/app" element={
+              <ProtectedRoute allowedRoles={["user"]}>
+                <UserDashboard />
+              </ProtectedRoute>
+            } />
           </Route>
         </Routes>
       </main>
