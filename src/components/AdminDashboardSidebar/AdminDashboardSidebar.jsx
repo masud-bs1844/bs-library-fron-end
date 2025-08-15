@@ -44,7 +44,7 @@ export default function AdminDashboardSidebar() {
               <Layers size={18} /> Manage Category
             </Link>
           </li>
-          <li>
+          {/* <li>
             <Link
               to="/upload"
               className={location.pathname === "/upload" ? navItemActive : navItem}
@@ -67,7 +67,7 @@ export default function AdminDashboardSidebar() {
             >
               <BookOpen size={18} /> Check-out Books
             </Link>
-          </li>
+          </li> */}
           <li>
             <Link
               to="/help"

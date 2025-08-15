@@ -17,7 +17,7 @@ import ManageCategory from './pages/ManageCategory/ManageCategory';
 import AuthCallback from './pages/auth/AuthCallback';
 import ProtectedRoute from './routes/ProtectedRoute';
 import DashRouter from './routes/DashRouter';
-import UserDashboard from './pages/user/UserDashboard';
+import UserDashboard from './pages/User/UserDashboard';
 import Logout from './pages/auth/Logout';
 
 function App() {
@@ -36,7 +36,7 @@ function App() {
             <Route path="/manage-books" element={<ManageBooks />} />
             <Route path="/manage-category" element={<ManageCategory />} />
             <Route path="/auth/callback" element={<AuthCallback />} />
-            
+            <Route path='/settings' element={<h1>Settings Page</h1>} />
             <Route
               path="/dashboard"
               element={
@@ -51,7 +51,7 @@ function App() {
               </ProtectedRoute>
             } />
 
-            <Route path="/app" element={
+            <Route path="/user" element={
               <ProtectedRoute allowedRoles={["user"]}>
                 <UserDashboard />
               </ProtectedRoute>
