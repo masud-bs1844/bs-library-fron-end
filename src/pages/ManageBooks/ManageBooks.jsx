@@ -304,10 +304,10 @@ export default function ManageBooks() {
         if (form.coverFile) formData.append("book_cover", form.coverFile);
         if (form.pdfFile) formData.append("pdf_file", form.pdfFile);
         if (form.audioFile) formData.append("audio_file", form.audioFile);
-
         const response = await api.post("/book/create", formData, {
           headers: { "Content-Type": "multipart/form-data" },
         });
+
 
         // On success, add to local state
         await fetchBooks();
@@ -323,8 +323,10 @@ export default function ManageBooks() {
       setTimeout(() => setSavedToast(false), 2000);
     } catch (error) {
       console.error("Error saving book:", error);
-      alert(error.response?.data?.message || "An error occurred while saving the book.");
-      setSaving(false);
+      const errorMsg = error.response?.data?.errors
+        ? Object.values(error.response.data.errors).flat().join("\n")
+        : error.response?.data?.message || error.message;
+      alert(errorMsg);
     }
   };
 
