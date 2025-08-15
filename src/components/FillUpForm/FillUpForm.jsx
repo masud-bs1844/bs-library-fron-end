@@ -8,7 +8,7 @@ import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { CalendarDays, Upload, Users, BookOpen, HelpCircle, LogOut } from "lucide-react";
 import api from "../../api"; // your axios instance from api.js
-import Sidebar from "../DashboardSidebar/DashboardSidebar";
+import Sidebar from "../Sidebar/Sidebar";
 
 export default function FillUpForm() {
   const { id } = useParams(); // assume /fillup-form/:id route

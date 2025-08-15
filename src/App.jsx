@@ -19,6 +19,12 @@ import ProtectedRoute from './routes/ProtectedRoute';
 import DashRouter from './routes/DashRouter';
 import UserDashboard from './pages/User/UserDashboard';
 import Logout from './pages/auth/Logout';
+import MyLoansBlank from './pages/MyLoansBlank/MyLoansBlank';
+import UserSettings from './pages/UserSettings/UserSettings';
+import UserHistory from './pages/UserHistory/UserHistory';
+import AdminSettings from './pages/AdminSettings/AdminSettings';
+import DonationRequest from './pages/DonationRequest/DonationRequest';
+
 
 function App() {
   return (
@@ -36,7 +42,11 @@ function App() {
             <Route path="/manage-books" element={<ManageBooks />} />
             <Route path="/manage-category" element={<ManageCategory />} />
             <Route path="/auth/callback" element={<AuthCallback />} />
-            <Route path='/settings' element={<h1>Settings Page</h1>} />
+            <Route path="/loans" element={<MyLoansBlank />} />
+            <Route path="/settings" element={<UserSettings />} />
+            <Route path="/history" element={<UserHistory />} />
+            <Route path="/setting" element={<AdminSettings />} />
+            <Route path="/donation-request" element={<DonationRequest />} />
             <Route
               path="/dashboard"
               element={
@@ -64,6 +74,7 @@ function App() {
           } />
         </Routes>
       </main>
+
     </BrowserRouter>
   );
 }

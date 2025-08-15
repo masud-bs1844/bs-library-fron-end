@@ -256,8 +256,8 @@ export default function ManageBooks() {
           const formData = new FormData();
           formData.append("name", form.title);
           formData.append("author", form.author);
-          formData.append("category_id", Number(form.category));
-          formData.append("total_copies", Number(form.copies));
+          formData.append("category_id", form.category);
+          formData.append("total_copies", form.copies);
           formData.append("short_description", form.description);
 
           if (form.coverFile) formData.append("book_cover", form.coverFile);
@@ -298,7 +298,7 @@ export default function ManageBooks() {
         formData.append("author", form.author);
         formData.append("category_id", form.category);
         formData.append("total_copies", form.copies);
-        formData.append("available_copies", form.copies);
+        // formData.append("available_copies", form.copies);
         formData.append("short_description", form.description);
 
         if (form.coverFile) formData.append("book_cover", form.coverFile);

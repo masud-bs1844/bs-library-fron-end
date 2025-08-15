@@ -5,6 +5,7 @@ import {
   Users,
   BookOpen,
   HelpCircle,
+  Settings,
   LogOut,
   Layers,
 } from "lucide-react";
@@ -51,15 +52,15 @@ export default function Sidebar() {
             </NavLink>
           </li>
 
-          <li>
+          {/* <li>
             <NavLink to="/check-out" className={itemClass}>
               <BookOpen size={18} /> Check-out Books
             </NavLink>
-          </li>
+          </li> */}
 
           <li>
             <NavLink to="/setting" className={itemClass}>
-              <HelpCircle size={18} /> Setting
+              <Settings size={18} /> Setting
             </NavLink>
           </li>
         </ul>

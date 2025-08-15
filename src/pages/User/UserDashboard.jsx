@@ -172,7 +172,7 @@ export default function UserDashboard() {
                 <tr className="text-left border-b border-gray-200">
                   <th className="py-2 px-3">#</th>
                   <th className="py-2 px-3 min-w-[180px]">Title</th>
-                  <th className="py-2 px-3 min-w-[160px]">User Name</th>
+                  {/* <th className="py-2 px-3 min-w-[160px]">User Name</th> */}
                   <th className="py-2 px-3 min-w-[140px]">Due Date</th>
                   <th className="py-2 px-3 min-w-[120px]">Status</th>
                   <th className="py-2 px-3 min-w-[220px] text-center">Action</th>
@@ -183,7 +183,7 @@ export default function UserDashboard() {
                   <tr key={l.id} className="border-b border-gray-200">
                     <td className="py-2 px-3">{i + 1}</td>
                     <td className="py-2 px-3 font-medium">{l.book}</td>
-                    <td className="py-2 px-3">{l.user}</td>
+                    {/* <td className="py-2 px-3">{l.user}</td> */}
                     <td className="py-2 px-3">{l.returned}</td>
                     <td className="py-2 px-3">
                       <span className={statusBadge(l.status)}>{l.status}</span>
